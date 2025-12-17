@@ -1,4 +1,4 @@
-name: phoneprice-mlproject
+name: MLProject
 
 conda_env: conda.yaml
 
