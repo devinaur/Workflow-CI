@@ -29,6 +29,7 @@ jobs:
         auto-update-conda: true
 
     - name: Run MLflow Project
+      shell: bash -l {0}
       run: |
         cd MLProject
         mlflow run .
