@@ -19,22 +19,14 @@ jobs:
       with:
         python-version: "3.12"
 
-    - name: Install MLflow & dependencies
+    - name: Install dependencies
       run: |
         pip install mlflow==2.19.0 pandas scikit-learn
 
-    - name: Set up Miniconda
-      uses: conda-incubator/setup-miniconda@v3
-      with:
-        auto-update-conda: true
-
-    - name: Run MLflow Project
+    - name: Run training with MLflow
       run: |
-        mkdir -p $GITHUB_WORKSPACE/mlruns
         cd MLProject
-        mlflow run . \
-          --env-manager local \
-          --backend-config tracking_uri=file:$GITHUB_WORKSPACE/mlruns
+        python modelling.py
 
     - name: Upload MLflow artifacts
       uses: actions/upload-artifact@v4
