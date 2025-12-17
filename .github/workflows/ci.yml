@@ -29,13 +29,12 @@ jobs:
         auto-update-conda: true
 
     - name: Run MLflow Project
-      env:
-        MLFLOW_TRACKING_URI: file:./mlruns
-        MLFLOW_ARTIFACT_URI: file:./mlruns
       run: |
-        mkdir -p mlruns
+        mkdir -p $GITHUB_WORKSPACE/mlruns
         cd MLProject
-        mlflow run . --env-manager local
+        mlflow run . \
+          --env-manager local \
+          --backend-config tracking_uri=file:$GITHUB_WORKSPACE/mlruns
 
     - name: Upload MLflow artifacts
       uses: actions/upload-artifact@v4
