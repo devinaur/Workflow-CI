@@ -1,17 +1,31 @@
 import os
-os.environ["MLFLOW_TRACKING_URI"] = "file:./mlruns"
-os.environ["MLFLOW_ARTIFACT_URI"] = "file:./mlruns"
-
-import pandas as pd
 import mlflow
-import mlflow.sklearn
+
+mlflow.set_tracking_uri("file:./mlruns")
+
+EXPERIMENT_NAME = "ci-phone-price"
+
+if mlflow.get_experiment_by_name(EXPERIMENT_NAME) is None:
+    mlflow.create_experiment(
+        name=EXPERIMENT_NAME,
+        artifact_location="./mlruns"
+    )
+
+mlflow.set_experiment(EXPERIMENT_NAME)
+
 print("Tracking URI:", mlflow.get_tracking_uri())
 
+import pandas as pd
+import mlflow.sklearn
 
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-
+from sklearn.metrics import (
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+)
 
 df = pd.read_csv("phoneprice_preprocessing.csv")
 
@@ -27,7 +41,8 @@ with mlflow.start_run():
     model = LogisticRegression(
         C=1.0,
         solver="lbfgs",
-        max_iter=1000
+        max_iter=1000,
+        multi_class="auto"
     )
     model.fit(X_train, y_train)
 
@@ -38,13 +53,21 @@ with mlflow.start_run():
     rec = recall_score(y_test, y_pred, average="weighted")
     f1 = f1_score(y_test, y_pred, average="weighted")
 
+    # Log params
     mlflow.log_param("C", 1.0)
     mlflow.log_param("solver", "lbfgs")
+    mlflow.log_param("max_iter", 1000)
 
+    # Log metrics
     mlflow.log_metric("accuracy", acc)
     mlflow.log_metric("precision", prec)
     mlflow.log_metric("recall", rec)
     mlflow.log_metric("f1_score", f1)
 
-    mlflow.sklearn.log_model(model, "model")
+    # Log model artifact
+    mlflow.sklearn.log_model(
+        sk_model=model,
+        artifact_path="model"
+    )
 
+print("Training & logging completed successfully.")
