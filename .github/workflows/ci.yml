@@ -23,6 +23,11 @@ jobs:
       run: |
         pip install mlflow==2.19.0 pandas scikit-learn
 
+    - name: Set up Miniconda
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        auto-update-conda: true
+        
     - name: Run MLflow Project
       run: |
         cd MLProject
