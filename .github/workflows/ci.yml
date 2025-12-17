@@ -25,11 +25,9 @@ jobs:
 
     - name: Run training with MLflow
       run: |
-        export MLFLOW_TRACKING_URI=file:$GITHUB_WORKSPACE/MLProject/mlruns
-        mkdir -p $GITHUB_WORKSPACE/MLProject/mlruns
         cd MLProject
+        mkdir -p mlruns
         python modelling.py
-
 
     - name: Upload MLflow artifacts
       uses: actions/upload-artifact@v4

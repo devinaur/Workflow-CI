@@ -1,10 +1,16 @@
+import os
+os.environ["MLFLOW_TRACKING_URI"] = "file:./mlruns"
+
 import pandas as pd
 import mlflow
 import mlflow.sklearn
 
+print("Tracking URI:", mlflow.get_tracking_uri())
+
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
 
 df = pd.read_csv("phoneprice_preprocessing.csv")
 
