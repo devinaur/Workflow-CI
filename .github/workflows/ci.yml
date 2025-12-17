@@ -27,11 +27,11 @@ jobs:
       uses: conda-incubator/setup-miniconda@v3
       with:
         auto-update-conda: true
-        
+
     - name: Run MLflow Project
       run: |
         cd MLProject
-        mlflow run . --no-conda
+        mlflow run
 
     - name: Upload MLflow artifacts
       uses: actions/upload-artifact@v4
