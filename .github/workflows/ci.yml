@@ -29,10 +29,13 @@ jobs:
         auto-update-conda: true
 
     - name: Run MLflow Project
-      shell: bash -l {0}
+      env:
+        MLFLOW_TRACKING_URI: file:./mlruns
+        MLFLOW_ARTIFACT_URI: file:./mlruns
       run: |
+        mkdir -p mlruns
         cd MLProject
-        mlflow run .
+        mlflow run . --env-manager local
 
     - name: Upload MLflow artifacts
       uses: actions/upload-artifact@v4
