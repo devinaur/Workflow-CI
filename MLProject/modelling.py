@@ -39,10 +39,9 @@ X_train, X_test, y_train, y_test = train_test_split(
 with mlflow.start_run():
 
     model = LogisticRegression(
-        C=1.0,
-        solver="lbfgs",
-        max_iter=1000,
-        multi_class="auto"
+    C=1.0,
+    solver="lbfgs",
+    max_iter=1000
     )
     model.fit(X_train, y_train)
 
