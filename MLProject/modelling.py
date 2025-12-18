@@ -20,38 +20,36 @@ X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42
 )
 
-with mlflow.start_run():
+model = LogisticRegression(
+    C=1.0,
+    solver="lbfgs",
+    max_iter=1000
+)
 
-    model = LogisticRegression(
-        C=1.0,
-        solver="lbfgs",
-        max_iter=1000
-    )
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
 
-    model.fit(X_train, y_train)
-    y_pred = model.predict(X_test)
+# Metrics
+acc = accuracy_score(y_test, y_pred)
+prec = precision_score(y_test, y_pred, average="weighted")
+rec = recall_score(y_test, y_pred, average="weighted")
+f1 = f1_score(y_test, y_pred, average="weighted")
 
-    # Metrics
-    acc = accuracy_score(y_test, y_pred)
-    prec = precision_score(y_test, y_pred, average="weighted")
-    rec = recall_score(y_test, y_pred, average="weighted")
-    f1 = f1_score(y_test, y_pred, average="weighted")
+# Log params
+mlflow.log_param("C", 1.0)
+mlflow.log_param("solver", "lbfgs")
+mlflow.log_param("max_iter", 1000)
 
-    # Log params
-    mlflow.log_param("C", 1.0)
-    mlflow.log_param("solver", "lbfgs")
-    mlflow.log_param("max_iter", 1000)
+# Log metrics
+mlflow.log_metric("accuracy", acc)
+mlflow.log_metric("precision", prec)
+mlflow.log_metric("recall", rec)
+mlflow.log_metric("f1_score", f1)
 
-    # Log metrics
-    mlflow.log_metric("accuracy", acc)
-    mlflow.log_metric("precision", prec)
-    mlflow.log_metric("recall", rec)
-    mlflow.log_metric("f1_score", f1)
-
-    # Log model
-    mlflow.sklearn.log_model(
-        model,
-        artifact_path="model"
-    )
+# Log model
+mlflow.sklearn.log_model(
+    model,
+    artifact_path="model"
+)
 
 print("berhasil")
