@@ -1,31 +1,15 @@
-import os
-import mlflow
-
-mlflow.set_tracking_uri("file:./mlruns")
-
-EXPERIMENT_NAME = "ci-phone-price"
-
-if mlflow.get_experiment_by_name(EXPERIMENT_NAME) is None:
-    mlflow.create_experiment(
-        name=EXPERIMENT_NAME,
-        artifact_location="./mlruns"
-    )
-
-mlflow.set_experiment(EXPERIMENT_NAME)
-
-print("Tracking URI:", mlflow.get_tracking_uri())
-
 import pandas as pd
+import mlflow
 import mlflow.sklearn
 
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import (
-    accuracy_score,
-    precision_score,
-    recall_score,
-    f1_score,
-)
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
+EXPERIMENT_NAME = "PhonePriceClassification"
+mlflow.set_experiment(EXPERIMENT_NAME)
+
+print("Tracking URI:", mlflow.get_tracking_uri())
 
 df = pd.read_csv("phoneprice_preprocessing.csv")
 
@@ -39,14 +23,15 @@ X_train, X_test, y_train, y_test = train_test_split(
 with mlflow.start_run():
 
     model = LogisticRegression(
-    C=1.0,
-    solver="lbfgs",
-    max_iter=1000
+        C=1.0,
+        solver="lbfgs",
+        max_iter=1000
     )
-    model.fit(X_train, y_train)
 
+    model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
 
+    # Metrics
     acc = accuracy_score(y_test, y_pred)
     prec = precision_score(y_test, y_pred, average="weighted")
     rec = recall_score(y_test, y_pred, average="weighted")
@@ -63,10 +48,10 @@ with mlflow.start_run():
     mlflow.log_metric("recall", rec)
     mlflow.log_metric("f1_score", f1)
 
-    # Log model artifact
+    # Log model
     mlflow.sklearn.log_model(
-        sk_model=model,
+        model,
         artifact_path="model"
     )
 
-print("Training & logging completed successfully.")
+print("berhasil")

@@ -27,7 +27,7 @@ jobs:
       run: |
         cd MLProject
         mkdir -p mlruns
-        python modelling.py
+        mlflow run .
 
     - name: Upload artifcats to GitHub
       uses: actions/upload-artifact@v4
